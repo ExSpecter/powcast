@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "326946121608",
+    "project_id": "powcast-f9d5f",
+    "storage_bucket": "powcast-f9d5f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326946121608:android:f7b86aa8ffcc0cc9c07c3d",
+        "android_client_info": {
+          "package_name": "com.powcast"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "326946121608-eq90p3ugbv9fuk8s02shr8360vokoifh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFJGiO0cvvO3yD6ptKVYFxgEoUeDujoL0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "326946121608-eq90p3ugbv9fuk8s02shr8360vokoifh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

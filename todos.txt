@@ -1,0 +1,10 @@
+- Ask for permission: https://developer.android.com/reference/android/Manifest.permission#SYSTEM_ALERT_WINDOW
+
+- Blur Screen: https://dev.to/jetrockets/how-to-blur-a-screen-in-react-navigation-469g
+- Wheel Picker: https://github.com/Cero-Studio/ReactNativeWheelPicker | https://www.npmjs.com/package/react-native-wheel-picker-android
+- Async Storage: https://github.com/mrousavy/react-native-mmkv
+
+
+LINKS
+https://developer.android.com/guide/components/activities/background-starts#exceptions
+https://developer.android.com/training/scheduling/alarms
