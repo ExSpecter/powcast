@@ -1,31 +1,44 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import {MMKV, useMMKVObject} from 'react-native-mmkv';
+import {IAlarm} from '../domain/alarm.interface';
 import {AlarmService} from '../services/alarm.service';
+import {AlarmKey} from '../shared/store.keys';
 import WeekSelection from './WeekSelection/WeekSelection';
+import Icon from 'react-native-vector-icons/Feather';
+
+const alarmService = new AlarmService();
+const storage = new MMKV();
 
 const AlarmSetter = () => {
-  const now = new Date();
-  const [hour, onChangeHour] = React.useState<string>(
-    now.getHours().toString(),
-  );
-  const [minute, onChangeMinute] = React.useState<string>(
-    now.getMinutes().toString(),
-  );
+  const [alarm, setAlarm] = useMMKVObject<IAlarm>(AlarmKey);
 
-  const validateTimeInput = (updateFn: Function, value: string) => {
-    updateFn(value);
-  };
+  function validateTimeInput(updateFn: Function, value: string) {
+    updateFn(parseInt(value, 10));
+  }
+  function setHour(value: number) {
+    setAlarm({...alarm, hour: value});
+  }
+  function setMinute(value: number) {
+    setAlarm({...alarm, minute: value});
+  }
 
-  const alarmService = new AlarmService();
-
-  const onPressLearnMore = () => {
+  function activateAlarm() {
+    // TODO is klar
     const date = new Date();
-    date.setHours(parseInt(hour, 10));
-    date.setMinutes(parseInt(minute, 10));
-    date.setSeconds(date.getSeconds() + 10);
-
+    date.setSeconds(date.getSeconds() + 5);
     alarmService.setAlarm(date);
-  };
+  }
+
+  useEffect(() => {
+    if (!alarm) {
+      const now = new Date();
+      setAlarm({hour: now.getHours(), minute: now.getMinutes(), active: true});
+    }
+
+    console.log(storage.getAllKeys());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <View style={styles.alarmSetterBox}>
@@ -33,8 +46,8 @@ const AlarmSetter = () => {
         <View style={styles.timeInput}>
           <TextInput
             style={[styles.input, styles.hourInput]}
-            onChangeText={text => validateTimeInput(onChangeHour, text)}
-            value={hour}
+            onChangeText={text => validateTimeInput(setHour, text)}
+            value={alarm?.hour?.toString()}
             keyboardType="numeric"
             selectTextOnFocus
             maxLength={2}
@@ -42,16 +55,17 @@ const AlarmSetter = () => {
           <Text style={styles.timeDots}>:</Text>
           <TextInput
             style={[styles.input, styles.minuteInput]}
-            onChangeText={text => validateTimeInput(onChangeMinute, text)}
-            value={minute}
+            onChangeText={text => validateTimeInput(setMinute, text)}
+            value={alarm?.minute?.toString()}
             keyboardType="numeric"
             selectTextOnFocus
             maxLength={2}
           />
         </View>
 
-        <Pressable style={styles.setAlarmBtn} onPress={onPressLearnMore}>
-          <Text style={styles.setAlarmBtnText}>Set</Text>
+        <Pressable style={styles.setAlarmBtn} onPress={activateAlarm}>
+          <Icon name="check" size={24} color="#45516c" />
+          {/* <Text style={styles.setAlarmBtnText}>Set</Text> */}
         </Pressable>
       </View>
 

@@ -13,8 +13,8 @@ const Main = ({navigation}: {navigation: any}) => {
   const initProps: any = useContext(InitialPropsContext);
 
   useEffect(() => {
-    navigation.navigate('ActiveAlarm');
     if (initProps?.alarmID) {
+      navigation.navigate('ActiveAlarm');
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

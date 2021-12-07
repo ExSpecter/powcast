@@ -7,6 +7,8 @@ import com.facebook.react.ReactApplication;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.horcrux.svg.SvgPackage;
 import com.zmxv.RNSound.RNSoundPackage;
+import com.reactnativemmkv.MmkvModulePackage;
+import com.facebook.react.bridge.JSIModulePackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -36,6 +38,12 @@ public class MainApplication extends Application implements ReactApplication {
         @Override
         protected String getJSMainModuleName() {
           return "index";
+        }
+
+        // Add this method here!
+        @Override
+        protected JSIModulePackage getJSIModulePackage() {
+          return new MmkvModulePackage();
         }
       };
 

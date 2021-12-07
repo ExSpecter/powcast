@@ -1,17 +1,13 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {useMMKVObject} from 'react-native-mmkv';
+import {IAlarmDays} from '../../domain/alarm.interface';
+import {AlarmDaysKey} from '../../shared/store.keys';
 import DayButton from './DayButton';
 
 const WeekSelection = () => {
-  const [enabledList, updateEnabledList] = useState([
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-  ]);
+  const [enabledList, updateEnabledList] =
+    useMMKVObject<IAlarmDays>(AlarmDaysKey);
   const dayList = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
   const activeDay = (() => {
@@ -22,11 +18,11 @@ const WeekSelection = () => {
     return day - 1;
   })();
 
-  const toggleEnabled = (i: number) => {
-    let newEnabledList = [...enabledList];
+  function toggleEnabled(i: number) {
+    let newEnabledList = [...(enabledList?.daySelection || [])];
     newEnabledList[i] = !newEnabledList[i];
-    updateEnabledList(newEnabledList);
-  };
+    updateEnabledList({daySelection: newEnabledList});
+  }
 
   return (
     <View style={styles.container}>
@@ -34,7 +30,7 @@ const WeekSelection = () => {
         <TouchableOpacity key={dayText} onPress={() => toggleEnabled(i)}>
           <DayButton
             text={dayText}
-            enabled={enabledList[i]}
+            enabled={enabledList?.daySelection[i]}
             activeDay={activeDay === i}
           />
         </TouchableOpacity>
