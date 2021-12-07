@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import auth from '@react-native-firebase/auth';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -14,30 +15,18 @@ const App = (props: any) => {
   // init user
   useEffect(() => {
     auth().signInAnonymously();
+    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
+    return subscriber; // unsubscribe on unmount
   }, []);
 
   const [initializing, setInitializing] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [user, setUser] = useState();
+  const [, setUser] = useState();
 
   // Handle user state changes
   function onAuthStateChanged(user: any) {
     setUser(user);
     if (initializing) setInitializing(false);
   }
-
-  useEffect(() => {
-    const subscriber = auth().onAuthStateChanged(onAuthStateChanged);
-    return subscriber; // unsubscribe on unmount
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // useEffect(() => {
-  //   if (props.alarmID) {
-  //     console.log('Navigate');
-  //     navigation.navigate({key: 'ActiveAlarm'});
-  //   }
-  // });
 
   if (initializing) return null; // TODO show logo
 

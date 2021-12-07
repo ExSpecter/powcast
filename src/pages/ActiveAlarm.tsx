@@ -28,26 +28,46 @@ const checkSoundReducer = (
   }
 };
 
+enum SoundState {
+  Initializing = 'Init',
+  Ready = 'Ready',
+  Paused = 'Pause',
+  Playing = 'Playing',
+}
+
+const updateSoundState = (
+  state: SoundState,
+  action: SoundState,
+): SoundState => {
+  return action;
+};
+
 const ActiveAlarm = () => {
   const reference = storage().ref('casts/powcast-test.mp3');
 
   const [sound, setSound] = useState<Sound | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [soundState, setSoundState] = useReducer(
+    updateSoundState,
+    SoundState.Initializing,
+  );
   const [, dispatch] = useReducer(checkSoundReducer, null);
   const [soundProgress, setSoundProgress] = useState(0);
 
+  // TODO the callbacks are not reactive
   function toggleSound() {
-    if (isPlaying) {
-      setIsPlaying(false);
+    if (soundState === SoundState.Initializing) return;
+
+    if (soundState === SoundState.Playing) {
+      setSoundState(SoundState.Paused);
       sound?.pause(() => {
         stopProgressCheck();
       });
     } else {
-      setIsPlaying(true);
+      setSoundState(SoundState.Playing);
       startProgressCheck();
 
       sound?.play(() => {
-        setIsPlaying(false);
+        setSoundState(SoundState.Paused);
         stopProgressCheck();
       });
     }
@@ -61,6 +81,10 @@ const ActiveAlarm = () => {
         console.log('failed to load the sound', error);
         return;
       }
+
+      setTimeout(() => {
+        setSoundState(SoundState.Ready);
+      }, 1000);
     });
 
     setSound(soundFile);
@@ -86,6 +110,11 @@ const ActiveAlarm = () => {
     loadSound();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    if (soundState === SoundState.Ready) {
+      toggleSound();
+    }
+  });
 
   return (
     <ImageBackground
@@ -99,6 +128,7 @@ const ActiveAlarm = () => {
           size={108}
           borderWidth={0}
           thickness={4}
+          indeterminate={soundState === SoundState.Initializing}
           color="#276d43"
         />
 
@@ -107,7 +137,7 @@ const ActiveAlarm = () => {
             style={styles.playButton}
             onPress={() => toggleSound()}>
             <Icon
-              name={isPlaying ? 'pause' : 'play'}
+              name={soundState === SoundState.Playing ? 'pause' : 'play'}
               size={30}
               color="#45516c"
             />
