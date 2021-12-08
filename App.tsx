@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import 'react-native-gesture-handler';
 import auth from '@react-native-firebase/auth';
 import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import React, {useEffect, useState} from 'react';
 import ActiveAlarm from './src/pages/ActiveAlarm';
 import CastList from './src/pages/CastList';
@@ -9,7 +10,7 @@ import Main from './src/pages/Main';
 import Settings from './src/pages/Settings';
 import {InitialPropsContext} from './src/shared/initial-props.context';
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const App = (props: any) => {
   // init user
@@ -39,7 +40,13 @@ const App = (props: any) => {
             headerShown: false,
           }}>
           <Stack.Screen name="Main" component={Main} />
-          <Stack.Screen name="CastList" component={CastList} />
+          <Stack.Screen
+            name="CastList"
+            component={CastList}
+            options={{
+              ...TransitionPresets.ModalSlideFromBottomIOS,
+            }}
+          />
           <Stack.Screen name="ActiveAlarm" component={ActiveAlarm} />
           <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator>

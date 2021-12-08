@@ -67,6 +67,7 @@ const ActiveAlarm = () => {
       startProgressCheck();
 
       sound?.play(() => {
+        // TODO set progress to 1
         setSoundState(SoundState.Paused);
         stopProgressCheck();
       });
