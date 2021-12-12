@@ -1,7 +1,7 @@
 import {NativeModules} from 'react-native';
 import shortid from 'shortid';
 
-export class AlarmService {
+class AlarmService {
   constructor() {}
 
   public setAlarm(date: Date, id?: string) {
@@ -16,3 +16,5 @@ export class AlarmService {
     NativeModules.AlarmLauncher.clearAlarm(id);
   }
 }
+
+export default new AlarmService();

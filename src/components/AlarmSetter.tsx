@@ -2,12 +2,11 @@ import React, {useEffect} from 'react';
 import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
 import {MMKV, useMMKVObject} from 'react-native-mmkv';
 import {IAlarm} from '../domain/alarm.interface';
-import {AlarmService} from '../services/alarm.service';
+import AlarmService from '../services/alarm.service';
 import {AlarmKey} from '../shared/store.keys';
 import WeekSelection from './WeekSelection/WeekSelection';
 import Icon from 'react-native-vector-icons/Feather';
 
-const alarmService = new AlarmService();
 const storage = new MMKV();
 
 const AlarmSetter = () => {
@@ -27,7 +26,7 @@ const AlarmSetter = () => {
     // TODO is klar
     const date = new Date();
     date.setSeconds(date.getSeconds() + 5);
-    alarmService.setAlarm(date);
+    AlarmService.setAlarm(date);
   }
 
   useEffect(() => {

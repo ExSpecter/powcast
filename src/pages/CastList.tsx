@@ -1,34 +1,73 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/Feather';
+import {IPowcastDto} from '../domain/dtos/powcast.dto';
+import {useAlarmPlayer} from '../hooks/alarm-player.hook';
+import PowcastService from '../services/powcast.service';
 
 const CastList = ({navigation}: any) => {
-  const data = [
-    {
-      id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-      title: 'First Item',
-    },
-    {
-      id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-      title: 'Second Item',
-    },
-    {
-      id: '58694a0f-3da1-471f-bd96-145571e29d72',
-      title: 'Third Item',
-    },
-  ];
+  const [powtcastList, setList] = useState<IPowcastDto[]>([]);
+  const [playingIndex, setPlayingIndex] = useState(-1);
+  const {toggleSound, loadSound, isPlaying} = useAlarmPlayer(
+    'casts/powcast-test.mp3',
+  );
 
   function back() {
     navigation.goBack();
   }
 
-  function renderItem({item}: any): any {
+  function playSound(index: number) {
+    setPlayingIndex(index);
+    toggleSound();
+  }
+
+  function addPowcast() {
+    PowcastService.add({
+      filename: 'powcast-test.mp3',
+      name: 'Dschungel Jungs',
+      description:
+        'Einer gefährlichen Bootstour folgt eine Wundergeschichte der Menschheit',
+      source: 'Im Grunde gut',
+      playtime: 56,
+    });
+  }
+
+  async function getPowcastList() {
+    const powcasts = await PowcastService.getList();
+    const list = powcasts.docs.map(doc => doc.data());
+    // console.log(powcasts.docs.length, list);
+    console.log(new Date(list[0].created.seconds * 1000));
+    setList(list as IPowcastDto[]);
+  }
+
+  useEffect(() => {
+    getPowcastList();
+    loadSound();
+  }, []);
+
+  function renderItem({item, index}: any): any {
     return (
-      <View style={styles.listItem}>
-        <Icon name="headphones" size={28} color="#ffffff" />
-        <Text style={styles.listItem.text}>{item.title}</Text>
+      <View
+        style={[styles.listItem, index === playingIndex && styles.activeItem]}>
+        <Icon name="headphones" size={28} />
+        <View style={styles.itemTextContainer}>
+          <Text style={styles.listItem.text}>{item.name}</Text>
+          <Text style={styles.listItem.subtext}>{item.description}</Text>
+        </View>
+        <TouchableOpacity
+          style={styles.downloadBtn}
+          onPress={() => playSound(index)}>
+          <Icon
+            name={
+              isPlaying && index === playingIndex
+                ? 'pause-circle'
+                : 'play-circle'
+            }
+            size={28}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -40,9 +79,9 @@ const CastList = ({navigation}: any) => {
       </TouchableOpacity>
       <Text style={styles.title}>Cast List</Text>
       <FlatList
-        data={data}
+        data={powtcastList}
         renderItem={renderItem}
-        keyExtractor={(item: any) => item.id}
+        keyExtractor={(item: any) => item.name}
       />
     </SafeAreaView>
   );
@@ -51,7 +90,7 @@ const CastList = ({navigation}: any) => {
 const styles = StyleSheet.create({
   wrapper: {
     flex: 1,
-    backgroundColor: '#f7f8fb',
+    backgroundColor: '#f1f2f5',
   },
   header: {
     padding: 10,
@@ -69,16 +108,27 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     paddingHorizontal: 22,
     flex: 1,
-    backgroundColor: '#5f8d3e',
+    backgroundColor: '#ffffff',
     borderRadius: 8,
     flexDirection: 'row',
+    alignItems: 'center',
 
     text: {
-      fontSize: 24,
-      color: 'white',
-      marginLeft: 12,
+      fontSize: 20,
+      // color: 'white', // this for playing
+    },
+    subtext: {
+      fontSize: 14,
     },
   },
+  activeItem: {
+    backgroundColor: '#5f8d3e', // this for playing
+  },
+  itemTextContainer: {
+    flex: 1,
+    marginHorizontal: 12,
+  },
+  downloadBtn: {},
 });
 
 export default CastList;
