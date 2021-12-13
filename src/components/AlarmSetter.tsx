@@ -10,7 +10,7 @@ import WeekSelection from './WeekSelection/WeekSelection';
 
 const storage = new MMKV();
 
-const AlarmSetter = () => {
+const AlarmSetter = ({toggleSettings}: any) => {
   const [alarm, setAlarm] = useMMKVObject<IAlarm>(AlarmKey);
   const [alarmId, setAlarmId] = useMMKVObject<string | null>(ActiveAlarmIdKey);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -44,7 +44,7 @@ const AlarmSetter = () => {
   }
 
   function showSettings() {
-    // TODO
+    toggleSettings();
   }
 
   useEffect(() => {
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
   alarmSwitch: {
-    transform: [{rotateZ: '-90deg'}],
+    // transform: [{rotateZ: '-90deg'}],
     flex: 1,
   },
 });
