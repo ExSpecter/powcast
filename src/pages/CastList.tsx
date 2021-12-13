@@ -23,16 +23,16 @@ const CastList = ({navigation}: any) => {
     toggleSound();
   }
 
-  function addPowcast() {
-    PowcastService.add({
-      filename: 'powcast-test.mp3',
-      name: 'Dschungel Jungs',
-      description:
-        'Einer gefährlichen Bootstour folgt eine Wundergeschichte der Menschheit',
-      source: 'Im Grunde gut',
-      playtime: 56,
-    });
-  }
+  // function addPowcast() {
+  //   PowcastService.add({
+  //     filename: 'powcast-test.mp3',
+  //     name: 'Dschungel Jungs',
+  //     description:
+  //       'Einer gefährlichen Bootstour folgt eine Wundergeschichte der Menschheit',
+  //     source: 'Im Grunde gut',
+  //     playtime: 56,
+  //   });
+  // }
 
   async function getPowcastList() {
     const powcasts = await PowcastService.getList();
@@ -45,16 +45,33 @@ const CastList = ({navigation}: any) => {
   useEffect(() => {
     getPowcastList();
     loadSound();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   function renderItem({item, index}: any): any {
     return (
       <View
         style={[styles.listItem, index === playingIndex && styles.activeItem]}>
-        <Icon name="headphones" size={28} />
+        <Icon
+          name="headphones"
+          size={28}
+          color={index === playingIndex ? 'white' : undefined}
+        />
         <View style={styles.itemTextContainer}>
-          <Text style={styles.listItem.text}>{item.name}</Text>
-          <Text style={styles.listItem.subtext}>{item.description}</Text>
+          <Text
+            style={[
+              styles.listItemText,
+              index === playingIndex && styles.activeText,
+            ]}>
+            {item.name}
+          </Text>
+          <Text
+            style={[
+              styles.listItemSubtext,
+              index === playingIndex && styles.activeText,
+            ]}>
+            {item.description}
+          </Text>
         </View>
         <TouchableOpacity
           style={styles.downloadBtn}
@@ -66,6 +83,7 @@ const CastList = ({navigation}: any) => {
                 : 'play-circle'
             }
             size={28}
+            color={index === playingIndex ? 'white' : undefined}
           />
         </TouchableOpacity>
       </View>
@@ -112,14 +130,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-
-    text: {
-      fontSize: 20,
-      // color: 'white', // this for playing
-    },
-    subtext: {
-      fontSize: 14,
-    },
+  },
+  listItemText: {
+    fontSize: 20,
+    // color: 'white', // this for playing
+  },
+  listItemSubtext: {
+    fontSize: 14,
+  },
+  activeText: {
+    color: 'white',
   },
   activeItem: {
     backgroundColor: '#5f8d3e', // this for playing

@@ -1,16 +1,19 @@
-import React, {useEffect} from 'react';
-import {Pressable, StyleSheet, Text, TextInput, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Switch, Text, TextInput, View} from 'react-native';
+import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MMKV, useMMKVObject} from 'react-native-mmkv';
+import Icon from 'react-native-vector-icons/Feather';
 import {IAlarm} from '../domain/alarm.interface';
 import AlarmService from '../services/alarm.service';
-import {AlarmKey} from '../shared/store.keys';
+import {ActiveAlarmIdKey, AlarmKey} from '../shared/store.keys';
 import WeekSelection from './WeekSelection/WeekSelection';
-import Icon from 'react-native-vector-icons/Feather';
 
 const storage = new MMKV();
 
 const AlarmSetter = () => {
   const [alarm, setAlarm] = useMMKVObject<IAlarm>(AlarmKey);
+  const [alarmId, setAlarmId] = useMMKVObject<string | null>(ActiveAlarmIdKey);
+  const [isEnabled, setIsEnabled] = useState(false);
 
   function validateTimeInput(updateFn: Function, value: string) {
     updateFn(parseInt(value, 10));
@@ -22,26 +25,47 @@ const AlarmSetter = () => {
     setAlarm({...alarm, minute: value});
   }
 
-  function activateAlarm() {
+  function toggleAlarm() {
     // TODO is klar
-    const date = new Date();
-    date.setSeconds(date.getSeconds() + 5);
-    AlarmService.setAlarm(date);
+    if (!alarmId) {
+      const date = new Date();
+      date.setSeconds(date.getSeconds() + 5);
+      const newAlarmId = AlarmService.setAlarm(date);
+      setAlarmId(newAlarmId);
+    } else {
+      AlarmService.stopAlarm(alarmId);
+      setAlarmId(null);
+    }
+  }
+
+  function switchAlarm() {
+    toggleAlarm();
+    setIsEnabled(!isEnabled);
+  }
+
+  function showSettings() {
+    // TODO
   }
 
   useEffect(() => {
+    // initialize alarm
     if (!alarm) {
       const now = new Date();
       setAlarm({hour: now.getHours(), minute: now.getMinutes(), active: true});
     }
 
-    console.log(storage.getAllKeys());
+    console.log('Store Keys: ' + storage.getAllKeys());
+    console.log('Active AlarmId: ' + alarmId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <View style={styles.alarmSetterBox}>
       <View style={styles.timeSetterBox}>
+        <TouchableOpacity style={styles.settingsBtn} onPress={showSettings}>
+          <Icon name="settings" size={24} color="#767577" />
+        </TouchableOpacity>
+
         <View style={styles.timeInput}>
           <TextInput
             style={[styles.input, styles.hourInput]}
@@ -62,10 +86,13 @@ const AlarmSetter = () => {
           />
         </View>
 
-        <Pressable style={styles.setAlarmBtn} onPress={activateAlarm}>
-          <Icon name="check" size={24} color="#45516c" />
-          {/* <Text style={styles.setAlarmBtnText}>Set</Text> */}
-        </Pressable>
+        <Switch
+          trackColor={{false: '#767577', true: '#0c2b28'}}
+          thumbColor={isEnabled ? '#6da34f' : '#f4f3f4'}
+          onValueChange={switchAlarm}
+          value={isEnabled}
+          style={styles.alarmSwitch}
+        />
       </View>
 
       <View style={styles.weekDayBox}>
@@ -99,6 +126,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
+    flex: 4,
+    justifyContent: 'center',
   },
   input: {
     fontSize: 36,
@@ -112,13 +141,8 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   minuteInput: {},
-  setAlarmBtn: {
-    elevation: 2,
-    borderRadius: 8,
-    backgroundColor: '#eaeaeb',
-    paddingVertical: 6,
-    paddingHorizontal: 16,
-    alignItems: 'center',
+  settingsBtn: {
+    flex: 1,
     justifyContent: 'center',
   },
   setAlarmBtnText: {
@@ -130,6 +154,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f8fb',
     borderTopColor: '#eaeaeb',
     borderTopWidth: 1,
+  },
+  alarmSwitch: {
+    transform: [{rotateZ: '-90deg'}],
+    flex: 1,
   },
 });
 
