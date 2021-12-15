@@ -120,7 +120,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 2,
   },
   timeInput: {
     display: 'flex',
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   input: {
-    fontSize: 36,
+    fontSize: 48,
     color: '#45516c',
   },
   timeDots: {

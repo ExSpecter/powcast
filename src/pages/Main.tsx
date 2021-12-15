@@ -17,6 +17,7 @@ import {
 import AlarmSetter from '../components/AlarmSetter';
 import {InitialPropsContext} from '../shared/initial-props.context';
 import Icon from 'react-native-vector-icons/Feather';
+import Options from '../components/Options';
 
 const SettingsHeight = Dimensions.get('window').height / 2; // TODO based on view height
 
@@ -68,10 +69,9 @@ const Main = ({navigation}: any) => {
         source={require('../assets/bkg.jpg')}
         resizeMode="cover"
         style={styles.image}>
-        <AlarmSetter
-          style={styles.alarmSetter}
-          toggleSettings={toggleSettings}
-        />
+        <View style={styles.alarmSetter}>
+          <AlarmSetter toggleSettings={toggleSettings} />
+        </View>
         <View style={styles.optionArea}>
           <Animated.View
             style={[
@@ -86,8 +86,9 @@ const Main = ({navigation}: any) => {
                   },
                 ],
               },
-            ]}
-          />
+            ]}>
+            <Options />
+          </Animated.View>
         </View>
         <View style={styles.listButtonContainer}>
           <TouchableOpacity onPress={() => goToCastList()}>
@@ -104,22 +105,27 @@ const styles = StyleSheet.create({
   image: {
     height: ScreenHeight,
   },
-  alarmSetter: {},
+  alarmSetter: {
+    zIndex: 4,
+  },
   spacer: {
     flex: 1,
   },
   optionArea: {
     flex: 1,
     overflow: 'hidden',
-    marginTop: -34,
+    marginTop: -50, //-34,
     alignItems: 'center',
+    zIndex: 3,
   },
   optionWrapper: {
     backgroundColor: '#f7f8fb',
     height: SettingsHeight,
     width: '80%',
     position: 'absolute',
-    borderRadius: 12,
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+    padding: 16,
   },
   listButtonContainer: {
     alignItems: 'center',

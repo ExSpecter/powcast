@@ -28,6 +28,7 @@
     "react-native-sound": "^0.11.1",
     "react-native-svg": "^12.1.1",
     "react-native-vector-icons": "^9.0.0",
+    "react-native-wheel-picker-android": "^2.0.6",
     "shortid": "^2.2.16"
   },
   "devDependencies": {
