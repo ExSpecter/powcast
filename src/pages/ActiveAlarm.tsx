@@ -1,18 +1,11 @@
 import React, {useEffect} from 'react';
-import {
-  Dimensions,
-  ImageBackground,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Dimensions, ImageBackground, StyleSheet, TouchableOpacity, View} from 'react-native';
 import * as Progress from 'react-native-progress';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {SoundState, useAlarmPlayer} from '../hooks/alarm-player.hook';
 
 const ActiveAlarm = () => {
-  const {soundProgress, soundState, isPlaying, toggleSound, loadSound} =
-    useAlarmPlayer('casts/powcast-test.mp3');
+  const {soundProgress, soundState, isPlaying, toggleSound, loadSound} = useAlarmPlayer('casts/powcast-test.mp3');
 
   useEffect(() => {
     loadSound();
@@ -25,11 +18,7 @@ const ActiveAlarm = () => {
   });
 
   return (
-    <ImageBackground
-      source={require('../assets/bkg.jpg')}
-      resizeMode="cover"
-      style={styles.image}
-      blurRadius={4}>
+    <ImageBackground source={require('../assets/bkg.jpg')} resizeMode="cover" style={styles.image} blurRadius={4}>
       <View style={styles.playButtonContainer}>
         <Progress.Circle
           progress={soundProgress}
@@ -41,14 +30,8 @@ const ActiveAlarm = () => {
         />
 
         <View style={styles.buttonWrapper}>
-          <TouchableOpacity
-            style={styles.playButton}
-            onPress={() => toggleSound()}>
-            <Icon
-              name={isPlaying ? 'pause' : 'play'}
-              size={30}
-              color="#45516c"
-            />
+          <TouchableOpacity style={styles.playButton} onPress={() => toggleSound()}>
+            <Icon name={isPlaying ? 'pause' : 'play'} size={30} color="#45516c" />
           </TouchableOpacity>
         </View>
       </View>
