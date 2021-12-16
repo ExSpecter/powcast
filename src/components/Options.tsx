@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {Animated, Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {useMMKVObject} from 'react-native-mmkv';
 import IonIcon from 'react-native-vector-icons/Ionicons';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
@@ -7,10 +7,16 @@ import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {WheelPicker} from 'react-native-wheel-picker-android';
 import {IAlarmOptions} from '../domain/alarm-options.interface';
 import {AlarmOptionsKey} from '../shared/store.keys';
+import {Primary, Secondary, Tertiary} from '../styles/colors';
 
 const Options = () => {
   const [settings, setSettings] = useMMKVObject<IAlarmOptions>(AlarmOptionsKey);
+
   const [modalVisible, setModalVisible] = useState(false);
+  const [snoozeTime, setSnoozeTime] = useState(settings?.snoozeTime);
+
+  const backupView = useRef(new Animated.Value(0)).current;
+  const [showBackupButton, setShowBackupButton] = useState(false);
 
   const wheelData = ['Aus', '1', '2', '3', '4', '5', '10', '15', '20', '30'];
 
@@ -21,31 +27,29 @@ const Options = () => {
     });
   }
 
-  function renderOption(
-    text: string,
-    icon: string,
-    optionKey: keyof IAlarmOptions,
-  ) {
+  useEffect(
+    () =>
+      Animated.timing(backupView, {
+        toValue: settings?.powcastAsRingtone ? 1 : 0,
+        duration: 300,
+        useNativeDriver: false,
+      }).start(),
+    [settings],
+  );
+
+  useEffect(() => {
+    backupView.addListener(({value}) => setShowBackupButton(value !== 0));
+  }, []);
+
+  function renderOption(text: string, icon: string, optionKey: keyof IAlarmOptions, disabled?: boolean) {
     return (
       <View style={styles.buttonWrapper}>
         <TouchableOpacity
-          style={[
-            styles.optionButton,
-            !!settings?.[optionKey] && styles.activeOption,
-          ]}
-          onPress={() => setSetting(optionKey, !settings?.[optionKey])}>
-          <IonIcon
-            name={icon}
-            size={20}
-            style={[!!settings?.[optionKey] && styles.activeText]}
-          />
-          <Text
-            style={[
-              styles.optionText,
-              !!settings?.[optionKey] && styles.activeText,
-            ]}>
-            {text}
-          </Text>
+          style={[styles.optionButton, !!settings?.[optionKey] && styles.activeOption, disabled && styles.disabled]}
+          onPress={() => setSetting(optionKey, !settings?.[optionKey])}
+          disabled={disabled}>
+          <IonIcon name={icon} size={20} style={[!!settings?.[optionKey] && styles.activeText]} />
+          <Text style={[styles.optionText, !!settings?.[optionKey] && styles.activeText]}>{text}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -54,38 +58,47 @@ const Options = () => {
   return (
     <View style={styles.optionWrapper}>
       <View style={styles.buttonRow}>
-        {renderOption('Autplay Powcast', 'car', 'autoplay')}
-        {renderOption(
-          'Powcast as Ringtone',
-          'notifications',
-          'powcastAsRingtone',
-        )}
+        {renderOption('Autplay Powcast', 'car', 'autoplay', !!settings?.powcastAsRingtone)}
+        {renderOption('Powcast as Ringtone', 'notifications', 'powcastAsRingtone')}
       </View>
 
-      <View>
-        <TouchableOpacity
-          style={[styles.optionButton, styles.backupRingtoneButton]}>
-          <FaIcon name="life-saver" size={20} />
-          <Text style={[styles.optionText]}>Backup Ringtone</Text>
-        </TouchableOpacity>
-      </View>
+      {showBackupButton && (
+        <Animated.View
+          style={{
+            left: backupView.interpolate({inputRange: [0, 1], outputRange: [-200, 0]}),
+            opacity: backupView.interpolate({inputRange: [0, 1], outputRange: [0.2, 1]}),
+          }}>
+          <TouchableOpacity
+            style={[
+              styles.optionButton,
+              styles.backupRingtoneButton,
+              !!settings?.backupRingtone && styles.activeOption,
+            ]}
+            onPress={() => setSetting('backupRingtone', !settings?.backupRingtone)}>
+            <FaIcon name="life-saver" size={20} style={[!!settings?.backupRingtone && styles.activeText]} />
+            <Text style={[styles.optionText, !!settings?.backupRingtone && styles.activeText]}>Backup Ringtone</Text>
+          </TouchableOpacity>
+        </Animated.View>
+      )}
 
       <View>
-        <TouchableOpacity style={[styles.optionLineButton]}>
-          <MatIcon name="music-note" size={20} />
-          <Text style={[styles.optionLineText]}>Ringtone</Text>
-          <Text style={[styles.optionLineDecision]}>Marimba</Text>
-        </TouchableOpacity>
-      </View>
+        <View style={styles.optionLineWrapper}>
+          <TouchableOpacity style={[styles.optionLineButton]}>
+            <MatIcon name="music-note" size={20} />
+            <Text style={[styles.optionLineText]}>Ringtone</Text>
+            <Text style={[styles.optionLineDecision]}>Marimba</Text>
+          </TouchableOpacity>
+        </View>
 
-      <View>
-        <TouchableOpacity
-          style={[styles.optionLineButton]}
-          onPress={() => setModalVisible(true)}>
-          <MatIcon name="alarm-snooze" size={20} />
-          <Text style={[styles.optionLineText]}>Snooze Time</Text>
-          <Text style={[styles.optionLineDecision]}>4 min.</Text>
-        </TouchableOpacity>
+        <View style={styles.optionLineWrapper}>
+          <TouchableOpacity style={[styles.optionLineButton]} onPress={() => setModalVisible(true)}>
+            <MatIcon name="alarm-snooze" size={20} />
+            <Text style={[styles.optionLineText]}>Snooze Time</Text>
+            <Text style={[styles.optionLineDecision]}>
+              {settings?.snoozeTime ? `${settings?.snoozeTime} min.` : 'Aus'}
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <Modal animationType="fade" transparent={true} visible={modalVisible}>
@@ -95,12 +108,22 @@ const Options = () => {
               data={wheelData}
               selectedItemTextColor="white"
               indicatorColor="white"
+              onItemSelected={index => setSnoozeTime(index > 0 ? parseInt(wheelData[index], 10) : 0)}
             />
-            <TouchableOpacity
-              style={[modalStyles.closeButton]}
-              onPress={() => setModalVisible(false)}>
-              <Text style={modalStyles.closeButtonText}>Dismiss</Text>
-            </TouchableOpacity>
+
+            <View style={modalStyles.buttonWrapper}>
+              <TouchableOpacity style={[modalStyles.modalButton]} onPress={() => setModalVisible(false)}>
+                <Text style={modalStyles.closeButtonText}>Dismiss</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[modalStyles.modalButton]}
+                onPress={() => {
+                  setSetting('snoozeTime', snoozeTime);
+                  setModalVisible(false);
+                }}>
+                <Text style={modalStyles.setButtonText}>Set</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -112,6 +135,7 @@ const styles = StyleSheet.create({
   optionWrapper: {
     justifyContent: 'space-evenly',
     height: '100%',
+    overflow: 'hidden',
   },
   buttonRow: {
     flexDirection: 'row',
@@ -131,7 +155,7 @@ const styles = StyleSheet.create({
     textAlign: 'right',
   },
   activeOption: {
-    backgroundColor: '#3E7035',
+    backgroundColor: Tertiary,
   },
   activeText: {
     color: 'white',
@@ -142,7 +166,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     height: 'auto',
   },
+  disabled: {
+    opacity: 0.6,
+  },
 
+  optionLineWrapper: {
+    marginVertical: 18,
+  },
   optionLineButton: {
     flexDirection: 'row',
   },
@@ -151,7 +181,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   optionLineDecision: {
-    color: '#3E7035',
+    color: Secondary,
     fontWeight: 'bold',
   },
 });
@@ -164,14 +194,21 @@ const modalStyles = StyleSheet.create({
     backgroundColor: '#ffffffbb',
   },
   modal: {
-    backgroundColor: '#003525',
+    backgroundColor: Secondary,
     paddingVertical: 24,
     paddingHorizontal: 40,
     borderRadius: 8,
   },
-  closeButton: {},
+  buttonWrapper: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {},
   closeButtonText: {
     color: 'white',
+  },
+  setButtonText: {
+    color: Primary,
   },
 });
 

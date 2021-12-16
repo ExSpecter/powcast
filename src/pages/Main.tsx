@@ -1,19 +1,5 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import {
-  Animated,
-  Dimensions,
-  ImageBackground,
-  SafeAreaView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import React, {useCallback, useContext, useEffect, useRef, useState} from 'react';
+import {Animated, Dimensions, ImageBackground, SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import AlarmSetter from '../components/AlarmSetter';
 import {InitialPropsContext} from '../shared/initial-props.context';
 import Icon from 'react-native-vector-icons/Feather';
@@ -53,22 +39,17 @@ const Main = ({navigation}: any) => {
       showSettings();
       setSettingsVisibility(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settingsVisible]);
 
   useEffect(() => {
     if (initProps?.alarmID) {
       navigation.navigate('ActiveAlarm');
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <SafeAreaView>
-      <ImageBackground
-        source={require('../assets/bkg.jpg')}
-        resizeMode="cover"
-        style={styles.image}>
+      <ImageBackground source={require('../assets/bkg.jpg')} resizeMode="cover" style={styles.image}>
         <View style={styles.alarmSetter}>
           <AlarmSetter toggleSettings={toggleSettings} />
         </View>

@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+import {Tertiary} from '../../styles/colors';
 
 const DayButton = (props: any) => {
   const [isEnabled, setIsEnabled] = useState(props.enabled);
@@ -24,9 +25,7 @@ const DayButton = (props: any) => {
         style={[
           styles.dayContainer,
           {
-            backgroundColor: isEnabled
-              ? daySelectionStyle.activeColor
-              : daySelectionStyle.passiveColor,
+            backgroundColor: isEnabled ? daySelectionStyle.activeColor : daySelectionStyle.passiveColor,
           },
         ]}>
         <Text style={styles.dayText}>{props.text}</Text>
@@ -43,7 +42,7 @@ export const daySelectionStyle = {
   fontSize: 12,
 
   dayCircleSize: 6,
-  dayCircleActiveColor: '#5acded',
+  dayCircleActiveColor: Tertiary,
   dayCirclePassiveColor: '#0000',
 };
 
@@ -64,6 +63,7 @@ const styles = StyleSheet.create({
     height: daySelectionStyle.dayCircleSize,
     width: daySelectionStyle.dayCircleSize,
     borderRadius: daySelectionStyle.dayCircleSize / 2,
+    marginBottom: 2,
   },
   dayText: {
     top: -1,
