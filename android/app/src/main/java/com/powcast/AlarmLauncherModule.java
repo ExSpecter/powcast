@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.util.Log;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -14,7 +15,6 @@ import com.facebook.react.bridge.Callback;
 
 import java.util.HashMap;
 import java.util.Map;
-import android.util.Log;
 
 public class AlarmLauncherModule extends ReactContextBaseJavaModule {
 

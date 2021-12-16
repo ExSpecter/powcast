@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import {IPowcastDto} from '../domain/dtos/powcast.dto';
 import {useAlarmPlayer} from '../hooks/alarm-player.hook';
 import PowcastService from '../services/powcast.service';
-import { Default, Secondary, Tertiary } from '../styles/colors';
+import {Default, Tertiary} from '../styles/colors';
 
 const CastList = ({navigation}: any) => {
   const [powtcastList, setList] = useState<IPowcastDto[]>([]);
