@@ -3,7 +3,7 @@ import {StyleSheet, Switch, Text, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {MMKV, useMMKVObject} from 'react-native-mmkv';
 import Icon from 'react-native-vector-icons/Feather';
-import {IAlarm} from '../domain/alarm.interface';
+import {IAlarm} from '../domain/local-storage/alarm.interface';
 import AlarmService from '../services/alarm.service';
 import {ActiveAlarmIdKey, AlarmKey} from '../shared/store.keys';
 import WeekSelection from './WeekSelection/WeekSelection';
@@ -26,7 +26,7 @@ const AlarmSetter = ({toggleSettings}: any) => {
   }
 
   function toggleAlarm() {
-    // TODO is klar
+    // TODO this is only test code
     if (!alarmId) {
       const date = new Date();
       date.setSeconds(date.getSeconds() + 5);
@@ -54,9 +54,8 @@ const AlarmSetter = ({toggleSettings}: any) => {
       setAlarm({hour: now.getHours(), minute: now.getMinutes(), active: true});
     }
 
-    console.log('Store Keys: ' + storage.getAllKeys());
-    console.log('Active AlarmId: ' + alarmId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // console.log('Store Keys: ' + storage.getAllKeys());
+    // console.log('Active AlarmId: ' + alarmId);
   }, []);
 
   return (

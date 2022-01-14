@@ -7,5 +7,10 @@ export interface IPowcastDto {
 
   img?: string;
 
-  created?: number; // date
+  created?: number;
+
+  season: number;
+  episode: number;
+
+  nextCastId: string;
 }

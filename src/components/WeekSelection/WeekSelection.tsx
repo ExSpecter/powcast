@@ -1,13 +1,12 @@
 import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {useMMKVObject} from 'react-native-mmkv';
-import {IAlarmDays} from '../../domain/alarm.interface';
+import {IAlarmDays} from '../../domain/local-storage/alarm.interface';
 import {AlarmDaysKey} from '../../shared/store.keys';
 import DayButton from './DayButton';
 
 const WeekSelection = () => {
-  const [enabledList, updateEnabledList] =
-    useMMKVObject<IAlarmDays>(AlarmDaysKey);
+  const [enabledList, updateEnabledList] = useMMKVObject<IAlarmDays>(AlarmDaysKey);
   const dayList = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'];
 
   const activeDay = (() => {
@@ -28,11 +27,7 @@ const WeekSelection = () => {
     <View style={styles.container}>
       {dayList.map((dayText, i) => (
         <TouchableOpacity key={dayText} onPress={() => toggleEnabled(i)}>
-          <DayButton
-            text={dayText}
-            enabled={enabledList?.daySelection[i]}
-            activeDay={activeDay === i}
-          />
+          <DayButton text={dayText} enabled={enabledList?.daySelection[i]} activeDay={activeDay === i} />
         </TouchableOpacity>
       ))}
     </View>

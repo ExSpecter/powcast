@@ -5,7 +5,7 @@ import IonIcon from 'react-native-vector-icons/Ionicons';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import MatIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {WheelPicker} from 'react-native-wheel-picker-android';
-import {IAlarmOptions} from '../domain/alarm-options.interface';
+import {IAlarmOptions} from '../domain/local-storage/alarm-options.interface';
 import {AlarmOptionsKey} from '../shared/store.keys';
 import {Primary, Secondary, Tertiary} from '../styles/colors';
 

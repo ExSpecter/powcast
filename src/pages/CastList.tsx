@@ -37,13 +37,19 @@ const CastList = ({navigation}: any) => {
     const powcasts = await PowcastService.getList();
     const list = powcasts.docs.map(doc => doc.data());
     // console.log(powcasts.docs.length, list);
-    console.log(new Date(list[0].created.seconds * 1000));
+    // console.log(new Date(list[0].created.seconds * 1000));
     setList(list as IPowcastDto[]);
+  }
+
+  async function getAlarmPowcast() {
+    const nextPowcast = await PowcastService.getPowcastForAlarm();
+    console.log(nextPowcast);
   }
 
   useEffect(() => {
     getPowcastList();
     loadSound();
+    getAlarmPowcast();
   }, []);
 
   function renderItem({item, index}: any): any {
