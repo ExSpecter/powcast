@@ -1,7 +1,7 @@
 import firestore, {FirebaseFirestoreTypes} from '@react-native-firebase/firestore';
 import {MMKV} from 'react-native-mmkv';
 import {IPowcastDto} from '../domain/dtos/powcast.dto';
-import {IUnlockedCasts} from '../domain/local-storage/unlocked-cast.interface';
+import {IUnlockedCastList} from '../domain/local-storage/unlocked-cast.interface';
 import {UnlockedCasts} from '../shared/store.keys';
 import moment from 'moment-mini';
 
@@ -27,53 +27,59 @@ class PowcastService {
   }
 
   public async getPowcastForAlarm() {
-    const lastCastList = this.getLastPowcast();
-    console.log(lastCastList);
+    const unlockedCastList = this.getUnlockedCastList();
+    console.log(unlockedCastList);
 
-    const lastCast = (
-      await this.get(lastCastList.unlockedCastId[lastCastList.unlockedCastId.length - 1])
-    ).data() as IPowcastDto;
+    const lastCast = (await this.get(unlockedCastList.ids[unlockedCastList.ids.length - 1])).data() as IPowcastDto;
 
     if (!lastCast) {
       return this.getNextPowcastAndUpdateList('3yQWa36H1S9i9xMPwqTR'); // first cast id TODO fetch episode 1
     }
 
-    if (lastCastList.lastCastDate && moment().isSame(moment(lastCastList.lastCastDate), 'day')) {
-      return lastCast;
-    } else {
+    if (this.canUnlockNextCast(lastCast, unlockedCastList)) {
       const nextCast = await this.getNextPowcastAndUpdateList(lastCast.nextCastId);
-      return nextCast || lastCast;
+      if (nextCast) return nextCast;
     }
+
+    return lastCast;
   }
 
-  private async getNextPowcastAndUpdateList(castId: string): Promise<IPowcastDto | null> {
+  private canUnlockNextCast(lastCast: IPowcastDto, unlockedCasts: IUnlockedCastList) {
+    return (
+      !!lastCast.nextCastId &&
+      !(unlockedCasts.lastUnlockDate && moment().isSame(moment(unlockedCasts.lastUnlockDate), 'day'))
+    );
+  }
+
+  private async getNextPowcastAndUpdateList(castId: string | null): Promise<IPowcastDto | null> {
+    if (!castId) return null;
     const newCast = await this.get(castId);
     if (!newCast) return null;
 
-    this.updateLastPowcastList(newCast);
+    this.updateUnlockedCastList(newCast);
 
     return newCast.data() as IPowcastDto;
   }
 
-  private getLastPowcast(): IUnlockedCasts {
+  private getUnlockedCastList(): IUnlockedCastList {
     const castJson = localStorage.getString(UnlockedCasts);
     if (!castJson) {
       return {
-        lastCastDate: null,
-        unlockedCastId: [],
+        lastUnlockDate: null,
+        ids: [],
       };
     }
     return JSON.parse(castJson);
   }
 
-  private updateLastPowcastList(newCast: PowcastDocument) {
-    const lastCastList = this.getLastPowcast();
-    lastCastList.unlockedCastId.push(newCast.id);
-    lastCastList.lastCastDate = moment().toISOString();
-    this.saveLastPowcast(lastCastList);
+  private updateUnlockedCastList(newCast: PowcastDocument) {
+    const lastCastList = this.getUnlockedCastList();
+    lastCastList.ids.push(newCast.id);
+    lastCastList.lastUnlockDate = moment().toISOString();
+    this.saveUnlockedCastList(lastCastList);
   }
 
-  private saveLastPowcast(unlockedCasts: IUnlockedCasts) {
+  private saveUnlockedCastList(unlockedCasts: IUnlockedCastList) {
     localStorage.set(UnlockedCasts, JSON.stringify(unlockedCasts));
   }
 }

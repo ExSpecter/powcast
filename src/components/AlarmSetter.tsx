@@ -1,14 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Switch, Text, TextInput, View} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {MMKV, useMMKVObject} from 'react-native-mmkv';
+import {useMMKVObject} from 'react-native-mmkv';
 import Icon from 'react-native-vector-icons/Feather';
 import {IAlarm} from '../domain/local-storage/alarm.interface';
 import AlarmService from '../services/alarm.service';
 import {ActiveAlarmIdKey, AlarmKey} from '../shared/store.keys';
 import WeekSelection from './WeekSelection/WeekSelection';
-
-const storage = new MMKV();
 
 const AlarmSetter = ({toggleSettings}: any) => {
   const [alarm, setAlarm] = useMMKVObject<IAlarm>(AlarmKey);

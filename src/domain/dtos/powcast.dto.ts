@@ -12,5 +12,5 @@ export interface IPowcastDto {
   season: number;
   episode: number;
 
-  nextCastId: string;
+  nextCastId: string | null;
 }

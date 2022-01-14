@@ -1,7 +1,16 @@
-- Ask for permission: https://developer.android.com/reference/android/Manifest.permission#SYSTEM_ALERT_WINDOW
-- Alarm Set Process
-- Alarm Settings
-- Get Next Powcast Logic
+Next Steps:
+- Play right Powcast on Alarm
+- Ringtone List for Settings
+- Play Correct Alarm Logic
+- Auto Next Alarm Setting if Days selected, otherwise disable alarm
+- Show correct Unlocked Powcast List
+- Play Correct Powcast in List
+
+Later:
+- Ask for permission: 
+    - https://developer.android.com/reference/android/Manifest.permission#SYSTEM_ALERT_WINDOW
+    - https://developer.android.com/guide/components/activities/background-starts#exceptions
+    - https://developer.android.com/training/scheduling/alarms
 
 LIBS
 - 
@@ -12,5 +21,3 @@ LIBS
 
 LINKS
 Blur Screen: https://dev.to/jetrockets/how-to-blur-a-screen-in-react-navigation-469g
-https://developer.android.com/guide/components/activities/background-starts#exceptions
-https://developer.android.com/training/scheduling/alarms

@@ -26,10 +26,12 @@ const CastList = ({navigation}: any) => {
   //   PowcastService.add({
   //     filename: 'powcast-test.mp3',
   //     name: 'Dschungel Jungs',
-  //     description:
-  //       'Einer gefährlichen Bootstour folgt eine Wundergeschichte der Menschheit',
+  //     description: 'Einer gefährlichen Bootstour folgt eine Wundergeschichte der Menschheit',
   //     source: 'Im Grunde gut',
   //     playtime: 56,
+  //     season: 1,
+  //     episode: 10,
+  //     nextCastId: null,
   //   });
   // }
 
@@ -37,7 +39,7 @@ const CastList = ({navigation}: any) => {
     const powcasts = await PowcastService.getList();
     const list = powcasts.docs.map(doc => doc.data());
     // console.log(powcasts.docs.length, list);
-    // console.log(new Date(list[0].created.seconds * 1000));
+    // How to convert to date: console.log(new Date(list[0].created.seconds * 1000));
     setList(list as IPowcastDto[]);
   }
 

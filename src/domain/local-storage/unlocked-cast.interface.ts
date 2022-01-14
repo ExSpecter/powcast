@@ -1,4 +1,4 @@
-export interface IUnlockedCasts {
-  unlockedCastId: string[];
-  lastCastDate: string | null;
+export interface IUnlockedCastList {
+  ids: string[];
+  lastUnlockDate: string | null;
 }
