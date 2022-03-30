@@ -1,7 +1,7 @@
 Next Steps:
 - Play right Powcast on Alarm
-- Ringtone List for Settings
-- Play Correct Alarm Logic
+- Get Ringtone List for Settings
+- Play Correct Alarm Logic (as defined in settings)
 - Auto Next Alarm Setting if Days selected, otherwise disable alarm
 - Show correct Unlocked Powcast List
 - Play Correct Powcast in List
@@ -11,6 +11,7 @@ Later:
     - https://developer.android.com/reference/android/Manifest.permission#SYSTEM_ALERT_WINDOW
     - https://developer.android.com/guide/components/activities/background-starts#exceptions
     - https://developer.android.com/training/scheduling/alarms
+- Add get next Cast Button to Cast List if it is unlockable
 
 LIBS
 - 
